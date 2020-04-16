@@ -24,6 +24,8 @@ class ViewController: UIViewController
 
     var arrHomeData = [Rows]()
     var tblViwHome = UITableView()
+    let refreshControl = UIRefreshControl()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -53,7 +55,21 @@ class ViewController: UIViewController
         
         tblViwHome.register(clsTeamTableViewCell.self, forCellReuseIdentifier: "rowCell")
         
+        if #available(iOS 10.0, *) {
+            let title = NSLocalizedString("PullToRefresh", comment: "Pull to refresh")
+            refreshControl.attributedTitle = NSAttributedString(string: title)
+            refreshControl.addTarget(self,
+                                     action: #selector(refreshOptions(sender:)),
+                                     for: .valueChanged)
+            tblViwHome.refreshControl = refreshControl
+        }
+        
         self.getMatchesResultList()
+    }
+    @objc private func refreshOptions(sender: UIRefreshControl) {
+        // Perform actions to refresh the content
+        self.getMatchesResultList()
+        refreshControl.endRefreshing()
     }
     //MARK: - api call
     //method is used for gettting viewed Team list
