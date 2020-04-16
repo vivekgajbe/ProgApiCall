@@ -48,10 +48,10 @@ class ViewController: UIViewController
         tblViwHome.estimatedRowHeight = 80
         tblViwHome.rowHeight = UITableView.automaticDimension
         
-//        tblViwHome.dataSource = self
-//        tblViwHome.delegate = self
+        tblViwHome.dataSource = self
+        tblViwHome.delegate = self
         
-//        tblViwHome.register(clsTeamTableViewCell.self, forCellReuseIdentifier: "rowCell")
+        tblViwHome.register(clsTeamTableViewCell.self, forCellReuseIdentifier: "rowCell")
         
         self.getMatchesResultList()
     }
@@ -90,3 +90,81 @@ class ViewController: UIViewController
         }
     }
 }
+//MARK: - extension for table view methods
+extension ViewController : UITableViewDelegate
+{
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+}
+//MARK: - extension for table view methods
+extension ViewController : UITableViewDataSource
+{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return arrHomeData.count
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "rowCell", for: indexPath) as! clsTeamTableViewCell
+        let ent = arrHomeData[indexPath.row]
+        cell.nameLabel.text = ent.title
+        cell.detailLabel.text = ent.description
+        cell.imgProfile.sd_setImage(with: URL(string: ent.imageHref ?? ""))
+        cell.selectionStyle = .none
+        return cell
+    }
+}
+
+class clsTeamTableViewCell: UITableViewCell
+{
+    let nameLabel = UILabel()
+    let detailLabel = UILabel()
+    let imgProfile = UIImageView()
+    
+    // MARK: Initalizers
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        let marginGuide = contentView.layoutMarginsGuide
+        
+        contentView.addSubview(imgProfile)
+        imgProfile.translatesAutoresizingMaskIntoConstraints = false
+        imgProfile.centerYAnchor.constraint(equalTo:self.contentView.centerYAnchor).isActive = true
+        imgProfile.leadingAnchor.constraint(equalTo:self.contentView.leadingAnchor, constant:10).isActive = true
+        imgProfile.widthAnchor.constraint(equalToConstant:70).isActive = true
+        imgProfile.heightAnchor.constraint(equalToConstant:70).isActive = true
+        imgProfile.topAnchor.constraint(greaterThanOrEqualToSystemSpacingBelow: marginGuide.topAnchor, multiplier: 1.0).isActive = true
+        // imgProfile.bottomAnchor.constraint(greaterThanOrEqualToSystemSpacingBelow: marginGuide.bottomAnchor, multiplier: 1.0).isActive = true
+        
+        imgProfile.layer.cornerRadius = 35
+        imgProfile.clipsToBounds = true
+        
+        // configure titleLabel
+        contentView.addSubview(nameLabel)
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.leadingAnchor.constraint(equalTo:self.contentView.leadingAnchor, constant:90).isActive = true
+        //nameLabel.leadingAnchor.constraint(equalTo: imgProfile.leadingAnchor).isActive = true
+        nameLabel.topAnchor.constraint(equalTo: marginGuide.topAnchor).isActive = true
+        nameLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
+        nameLabel.numberOfLines = 0
+        nameLabel.font = UIFont.systemFont(ofSize: 16)//UIFont(name: "AvenirNext-DemiBold", size: 16)
+        
+        // configure authorLabel
+        contentView.addSubview(detailLabel)
+        detailLabel.translatesAutoresizingMaskIntoConstraints = false
+        detailLabel.leadingAnchor.constraint(equalTo:self.contentView.leadingAnchor, constant:90).isActive = true
+        //        detailLabel.leadingAnchor.constraint(equalTo: imgProfile.leadingAnchor).isActive = true
+        detailLabel.bottomAnchor.constraint(equalTo: marginGuide.bottomAnchor).isActive = true
+        detailLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
+        detailLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor).isActive = true
+        detailLabel.numberOfLines = 0
+        detailLabel.font = UIFont.systemFont(ofSize: 12)
+        detailLabel.textColor = UIColor.lightGray
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        
+        super.init(coder: aDecoder)
+    }
+}
+
