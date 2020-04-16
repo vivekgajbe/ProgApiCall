@@ -53,6 +53,40 @@ class ViewController: UIViewController
         
 //        tblViwHome.register(clsTeamTableViewCell.self, forCellReuseIdentifier: "rowCell")
         
-        //self.getMatchesResultList()
+        self.getMatchesResultList()
+    }
+    //MARK: - api call
+    //method is used for gettting viewed Team list
+    func getMatchesResultList()
+    {
+        let objRequest = RequestManager()
+        let strUrl = UrlConstants.homeUrl
+        
+        let dictMyContact = [String:Any]()
+        
+        Utility.shared.showLoader()
+        objRequest.requestCommonApiMethodCall_WithParam(strAPIName: strUrl, strMethodType: "GET", strParameterName: dictMyContact)
+        { (result, isSuccess, error) in
+            
+            Utility.shared.hideLoader()
+            if isSuccess{
+                let entData = result as! Facts
+                
+                self.arrHomeData = entData.rows
+                //print(self.arrHomeData)
+                
+                DispatchQueue.main.async {
+                    self.navigationItem.title = entData.title
+                    //Constants.APP_DEL.navigationController.title = entData.title
+                    self.tblViwHome.reloadData()
+                }
+                
+            }
+            else
+            {
+                
+                self.view.makeToast(message: error)
+            }
+        }
     }
 }
